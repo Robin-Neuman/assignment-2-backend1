@@ -1,0 +1,36 @@
+{
+  "name": "assignment-2-backend1",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "devStart": "nodemon ./server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.0.1",
+    "express": "^4.16.4",
+    "express-session": "^1.17.0",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "mysql": "^2.17.1",
+    "nodemon": "^2.0.2",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
+  },
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Robin-Neuman/assignment-2-backend1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Robin-Neuman/assignment-2-backend1/issues"
+  },
+  "homepage": "https://github.com/Robin-Neuman/assignment-2-backend1#readme",
+  "description": ""
+}
