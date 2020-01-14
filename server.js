@@ -10,7 +10,7 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql');
 var flash = require('express-flash');
 var session = require('express-session');
-var port = process.env.PORT || 3000;
+var port = 3000;
 
 var initializePass = require("./pass-config");
 
