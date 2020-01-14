@@ -2,8 +2,11 @@
   "name": "assignment-2-backend1",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "13.1.0"
+  },
   "scripts": {
-    "start": "node ./server.js",
+    "start": "node ./servewwr.js",
     "devStart": "nodemon ./server.js"
   },
   "dependencies": {
