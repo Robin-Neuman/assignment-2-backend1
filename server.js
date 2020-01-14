@@ -83,8 +83,9 @@ app.post('/register', function (req, res) {
   try{
   db.query('SELECT * FROM users WHERE username=? AND password=?', [req.body.usernameReg, req.body.passwordReg], function (err, rows, fields) {
     if (!!err || rows > 0) {
-      console.log("Username already taken");
-      res.redirect('/');
+      alert("Username already taken!")
+      console.log(rows);
+      res.redirect('/index');
     } else {
       db.query('INSERT INTO users (username, password) VALUES (?, ?)', [req.body.usernameReg, req.body.passwordReg], function(err, res) {
         if(!!err){
