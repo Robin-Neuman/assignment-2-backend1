@@ -59,9 +59,7 @@ app.use(session({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/', function (req, res) {
-  res.render('index');
-})
+
 
 app.use(logger('dev'));
 app.use(express.json());
