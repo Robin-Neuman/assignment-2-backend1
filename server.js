@@ -23,7 +23,7 @@ initializePass(
   }),
 
   id => 
-    db.query('SELECT * FROM users WHERE id=?', [username.id], function (err, rows, fields) {
+    db.query('SELECT * FROM users WHERE id=?', [id], function (err, rows, fields) {
     return rows.id;
 
   })
@@ -34,10 +34,10 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'bbkkll123',
-  database: 'assignment'
+  host: 'eu-cdbr-west-02.cleardb.net',
+  user: 'b2ef15df6cafb2',
+  password: '99921bac',
+  database: 'heroku_5bcb73518029905'
 });
 
 db.connect((err) => {
