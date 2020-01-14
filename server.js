@@ -91,7 +91,7 @@ app.post('/register', function (req, res) {
         if(!!err){
           throw err;
         } else{
-          console.log("New user inserted into db!");
+          alert("New user inserted into DB!");
         }
       })
       res.redirect('/home');
