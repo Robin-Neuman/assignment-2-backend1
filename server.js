@@ -84,8 +84,10 @@ app.post('/login', passport.authenticate('local', {
 app.post('/register', function (req, res) {
   try{
   db.query('SELECT * FROM users WHERE username=? AND password=?', [req.body.usernameReg, req.body.passwordReg], function (err, rows, fields) {
-    if (!!err || rows[0].username == req.body.usernameReg) {
+    
+    if (!!err || rows[0] != undefined ) {
       console.log("Username already taken!")
+      console.log(rows[0])
       
       res.redirect('/');
     } else {
@@ -94,7 +96,6 @@ app.post('/register', function (req, res) {
           throw err;
         } else{
           console.log("New user inserted into db!");
-          console.log(rows);
         }
       })
       res.redirect('/home');
