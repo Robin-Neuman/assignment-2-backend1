@@ -40,12 +40,24 @@ var db = mysql.createConnection({
   database: 'heroku_5bcb73518029905'
 });
 
-db.connect((err) => {
+function handleConnection(){
+db.connect(function connectDB(err) {
   if (err) {
     throw err;
   }
   console.log('Mysql connected');
 })
+}
+
+db.on('error', function errorDB(err){
+  if (err.code == 'PROTOCOL_CONNECTION_LOST') {   // Connection to the MySQL server is usually
+    handleConnection();                         // lost due to either server restart, or a
+} else {                                        // connnection idle timeout (the wait_timeout
+    throw err;                                  // server variable configures this)
+}
+})
+
+
 
 var app = express();
 
