@@ -11,27 +11,27 @@ var mysql = require('mysql');
 var flash = require('express-flash');
 var session = require('express-session');
 var bcrypt = require('bcryptjs');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3007;
 
 var initializePass = require("./pass-config");
 
 initializePass(
   passport, 
-  username => {
-    db.query('SELECT * FROM users WHERE username=?', [username], function (err, rows, fields) {
-      console.log(rows[0].username)
-    return rows[0].username;
+  username => 
+    db.query('SELECT * FROM users WHERE username=?', [username], (err, rows, fields) => {
+      console.log("Object before return:", {"username": rows[0].username, "id": rows[0].id, "password": rows[0].password})
+      var user = {"username": rows[0].username, "id": rows[0].id, "password": rows[0].password};
+    return user;
 
   }),
   
-  id => {
-    db.query('SELECT * FROM users WHERE id=?', [id], function (err, rows, fields) {
+  id => 
+    db.query('SELECT * FROM users WHERE id=?', [id], (err, rows, fields) => {
       console.log("test")
     return rows[0].id;
 
   })
-}
-  })
+  )
 
 
 var indexRouter = require('./routes/index');
@@ -47,8 +47,8 @@ var usersRouter = require('./routes/users');
 var db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'bbkkll123',
-  database: 'assignment'
+  password: '',
+  database: 'test'
 });
 
 function handleConnection(){

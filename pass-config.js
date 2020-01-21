@@ -3,12 +3,15 @@ var bcrypt = require('bcryptjs');
 
 function initialize(passport, getUserByName, getUserById) {
     var authUser = async (username, password, done) => {
-        var user = getUserByName(username)
+        var user = await getUserByName(username)
+        console.log("user:", user)
+        
         if(user == null || undefined){
             return done(null, false, { message: 'User does not exist'})
         }
 
         try{
+            console.log("compare password")
             if(await bcrypt.compare(password == user.password)){
                 return done(null, user)
             } else {
