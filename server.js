@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var mysql = require('mysql');
 var flash = require('express-flash');
 var session = require('express-session');
+var bcrypt = require('bcryptjs');
 var port = process.env.PORT || 3000;
 
 var initializePass = require("./pass-config");
@@ -18,26 +19,36 @@ initializePass(
   passport, 
   username => {
     db.query('SELECT * FROM users WHERE username=?', [username], function (err, rows, fields) {
-    return rows.username;
+      console.log(rows[0].username)
+    return rows[0].username;
 
   }),
-
-  id => 
+  
+  id => {
     db.query('SELECT * FROM users WHERE id=?', [id], function (err, rows, fields) {
-    return rows.id;
+      console.log("test")
+    return rows[0].id;
 
   })
+}
   })
 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+// var db = mysql.createConnection({
+//   host: 'eu-cdbr-west-02.cleardb.net',
+//   user: 'b2ef15df6cafb2',
+//   password: '99921bac',
+//   database: 'heroku_5bcb73518029905'
+// });
+
 var db = mysql.createConnection({
-  host: 'eu-cdbr-west-02.cleardb.net',
-  user: 'b2ef15df6cafb2',
-  password: '99921bac',
-  database: 'heroku_5bcb73518029905'
+  host: 'localhost',
+  user: 'root',
+  password: 'bbkkll123',
+  database: 'assignment'
 });
 
 function handleConnection(){
@@ -49,11 +60,13 @@ db.connect(function connectDB(err) {
 })
 }
 
+handleConnection()
+
 db.on('error', function errorDB(err){
-  if (err.code == 'PROTOCOL_CONNECTION_LOST') {   // Connection to the MySQL server is usually
-    handleConnection();                         // lost due to either server restart, or a
-} else {                                        // connnection idle timeout (the wait_timeout
-    throw err;                                  // server variable configures this)
+  if (err.code == 'PROTOCOL_CONNECTION_LOST') {   
+    handleConnection();                         
+} else {                                       
+    throw err;                                  
 }
 })
 
@@ -81,21 +94,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.session({
+  resave: true,
+  saveUninitialized: true,
+}))
 app.use(flash())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/home',
-  failureRedirect: '/',
-  failureFlash: true
-})
-)
-
-app.post('/register', function (req, res) {
+app.post('/register', async (req, res) => {
   try{
-  db.query('SELECT * FROM users WHERE username=? AND password=?', [req.body.usernameReg, req.body.passwordReg], function (err, rows, fields) {
+    let pass = await bcrypt.hash(req.body.passwordReg, 10);
+  db.query('SELECT * FROM users WHERE username=? AND password=?', [req.body.usernameReg, pass], function (err, rows, fields) {
     
     if (!!err || rows[0] != undefined ) {
       console.log("Username already taken!")
@@ -103,7 +113,7 @@ app.post('/register', function (req, res) {
       
       res.redirect('/');
     } else {
-      db.query('INSERT INTO users (username, password) VALUES (?, ?)', [req.body.usernameReg, req.body.passwordReg], function(err, res) {
+      db.query('INSERT INTO users (username, password) VALUES (?, ?)', [req.body.usernameReg, pass], function(err, res) {
         if(!!err){
           throw err;
         } else{
@@ -114,7 +124,7 @@ app.post('/register', function (req, res) {
     }
   })
 } catch{
-  res.redirect('/login');
+  res.redirect('/');
 }
 })
 
