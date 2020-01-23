@@ -11,6 +11,7 @@ var mysql = require('mysql');
 var flash = require('express-flash');
 var session = require('express-session');
 var bcrypt = require('bcryptjs');
+var methodOverride = require('method-override')
 var port = process.env.PORT || 3000;
 
 var initializePass = require("./pass-config");
@@ -81,17 +82,12 @@ app.use(session({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/', checkNotAuth, (req, res) => {
-  res.redirect('/index');
-})
 
-app.get('/index', checkNotAuth, (req, res) => {
-  res.render('index');
-})
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(flash())
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize())
@@ -99,11 +95,11 @@ app.use(passport.session({
   resave: true,
   saveUninitialized: true,
 }))
-app.use(flash())
+app.use(methodOverride('_method'))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-app.post('/register', async (req, res) => {
+app.post('/register', checkNotAuth, async (req, res) => {
 
   try {
 
@@ -113,7 +109,7 @@ app.post('/register', async (req, res) => {
         console.log("Username already taken!")
         console.log("HERE", rows[0].username)
 
-        res.redirect('/');
+        res.redirect('/register');
       } else {
         db.query('INSERT INTO users (username, password) VALUES (?, ?)', [req.body.username, pass], function (err, res) {
           if (!!err) {
@@ -132,7 +128,7 @@ app.post('/register', async (req, res) => {
           }
           
         })
-        res.redirect('/home');
+        res.redirect('/login');
       }
     })
   } catch{
@@ -140,31 +136,52 @@ app.post('/register', async (req, res) => {
   }
 })
 
+app.get('/', function (req, res) {
+  res.redirect('/login');
+})
+
+app.get('/login', checkNotAuth, function (req, res) {
+  res.render('login');
+})
+
+app.get('/register', checkNotAuth, function (req, res) {
+  res.render('register');
+})
+
 app.get('/home', checkAuth, function (req, res) {
   res.render('home')
 
 })
 
-app.post('/login', passport.authenticate('local', {
+app.post('/login', checkNotAuth, passport.authenticate('local', {
   successRedirect: '/home',
   failureRedirect: '/',
   failureFlash: true
 }))
 
-function checkAuth (req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect('/')
-}
+app.delete('/logout', (req, res) => {
+  req.logOut()
+  res.redirect('/login')
+})
 
 function checkNotAuth (req, res, next) {
+  let test = req.isAuthenticated();
+  console.log("Code runs", test)
   if (req.isAuthenticated()) {
-    console.log("Code runs")
+    
     return res.redirect('/home')
   }
   next()
 }
+
+function checkAuth (req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login')
+}
+
+
 
 app.listen(port);
 

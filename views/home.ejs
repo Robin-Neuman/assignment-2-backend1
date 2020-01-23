@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/script.js"></script>
 </head>
-<h1>Welcome to the review page!</h1>
+<body>
+    <h1>Welcome to the review page!</h1>
 <div id="mainCont">
     <h1>List of restaurants:</h1>
     <div id="restaurantsCont">
@@ -19,7 +20,9 @@
 <div id="footerCont">
 
 </div>
-<body>
+<form action="/logout?_method=DELETE" method="POST">
+    <button type="submit">Log out</button>
+</form>
 </body>
 
 </html>
