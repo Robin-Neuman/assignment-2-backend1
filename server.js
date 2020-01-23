@@ -11,27 +11,20 @@ var mysql = require('mysql');
 var flash = require('express-flash');
 var session = require('express-session');
 var bcrypt = require('bcryptjs');
-var port = process.env.PORT || 3007;
+var port = process.env.PORT || 3000;
 
 var initializePass = require("./pass-config");
 
+var users = [];
+
 initializePass(
-  passport, 
-  username => 
-    db.query('SELECT * FROM users WHERE username=?', [username], (err, rows, fields) => {
-      console.log("Object before return:", {"username": rows[0].username, "id": rows[0].id, "password": rows[0].password})
-      var user = {"username": rows[0].username, "id": rows[0].id, "password": rows[0].password};
-    return user;
+  passport,
+  username =>
+    users.find(user => user.username === username),
 
-  }),
-  
   id => 
-    db.query('SELECT * FROM users WHERE id=?', [id], (err, rows, fields) => {
-      console.log("test")
-    return rows[0].id;
-
-  })
-  )
+    users.find(user => user.id === id)
+)
 
 
 var indexRouter = require('./routes/index');
@@ -47,30 +40,34 @@ var usersRouter = require('./routes/users');
 var db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
-  database: 'test'
+  password: 'bbkkll123',
+  database: 'assignment'
 });
 
-function handleConnection(){
-db.connect(function connectDB(err) {
-  if (err) {
-    throw err;
-  }
-  console.log('Mysql connected');
-})
+function handleConnection() {
+  db.connect(function connectDB(err) {
+    if (err) {
+      throw err;
+    }
+    console.log('Mysql connected');
+  })
 }
 
 handleConnection()
 
-db.on('error', function errorDB(err){
-  if (err.code == 'PROTOCOL_CONNECTION_LOST') {   
-    handleConnection();                         
-} else {                                       
-    throw err;                                  
-}
+db.on('error', function errorDB(err) {
+  if (err.code == 'PROTOCOL_CONNECTION_LOST') {
+    handleConnection();
+  } else {
+    throw err;
+  }
 })
 
-
+db.query('SELECT * FROM users', (err, rows, fields) => {
+  for (const user of rows) {
+    users.push({ "username": user.username, "id": user.id, "password": user.password });
+  }
+})
 
 var app = express();
 
@@ -84,7 +81,11 @@ app.use(session({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/', function (req, res) {
+app.get('/', checkNotAuth, (req, res) => {
+  res.redirect('/index');
+})
+
+app.get('/index', checkNotAuth, (req, res) => {
   res.render('index');
 })
 
@@ -103,41 +104,67 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 app.post('/register', async (req, res) => {
-  try{
-    let pass = await bcrypt.hash(req.body.passwordReg, 10);
-  db.query('SELECT * FROM users WHERE username=? AND password=?', [req.body.usernameReg, pass], function (err, rows, fields) {
-    
-    if (!!err || rows[0] != undefined ) {
-      console.log("Username already taken!")
-      console.log(rows[0])
-      
-      res.redirect('/');
-    } else {
-      db.query('INSERT INTO users (username, password) VALUES (?, ?)', [req.body.usernameReg, pass], function(err, res) {
-        if(!!err){
-          throw err;
-        } else{
-          console.log("New user inserted into db!");
-        }
-      })
-      res.redirect('/home');
-    }
-  })
-} catch{
-  res.redirect('/');
-}
+
+  try {
+
+    let pass = await bcrypt.hash(req.body.password, 10);
+    db.query('SELECT * FROM users WHERE username=?', [req.body.username], function (err, rows, fields) {
+      if (!!err || rows[0] != undefined) {
+        console.log("Username already taken!")
+        console.log("HERE", rows[0].username)
+
+        res.redirect('/');
+      } else {
+        db.query('INSERT INTO users (username, password) VALUES (?, ?)', [req.body.username, pass], function (err, res) {
+          if (!!err) {
+            throw err;
+          } else {
+            
+            console.log("New user inserted into db!");
+            db.query('SELECT * FROM users', (err, rows, fields) => {
+              for (const user of rows) {
+                if (user.username != rows.username) {
+                  users.push({ "username": user.username, "id": user.id, "password": user.password });
+                }
+              }  
+            })
+            
+          }
+          
+        })
+        res.redirect('/home');
+      }
+    })
+  } catch{
+    res.redirect('/');
+  }
 })
 
-app.get('/home', function (req, res) {
-    res.render('home')
+app.get('/home', checkAuth, function (req, res) {
+  res.render('home')
 
 })
 
 app.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/index',
+  successRedirect: '/home',
+  failureRedirect: '/',
   failureFlash: true
 }))
+
+function checkAuth (req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/')
+}
+
+function checkNotAuth (req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log("Code runs")
+    return res.redirect('/home')
+  }
+  next()
+}
 
 app.listen(port);
 
