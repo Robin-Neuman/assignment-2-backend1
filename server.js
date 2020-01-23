@@ -31,19 +31,19 @@ initializePass(
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-// var db = mysql.createConnection({
-//   host: 'eu-cdbr-west-02.cleardb.net',
-//   user: 'b2ef15df6cafb2',
-//   password: '99921bac',
-//   database: 'heroku_5bcb73518029905'
-// });
-
 var db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'bbkkll123',
-  database: 'assignment'
+  host: 'eu-cdbr-west-02.cleardb.net',
+  user: 'b2ef15df6cafb2',
+  password: '99921bac',
+  database: 'heroku_5bcb73518029905'
 });
+
+// var db = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'bbkkll123',
+//   database: 'assignment'
+// });
 
 function handleConnection() {
   db.connect(function connectDB(err) {
@@ -107,7 +107,6 @@ app.post('/register', checkNotAuth, async (req, res) => {
     db.query('SELECT * FROM users WHERE username=?', [req.body.username], function (err, rows, fields) {
       if (!!err || rows[0] != undefined) {
         console.log("Username already taken!")
-        console.log("HERE", rows[0].username)
 
         res.redirect('/register');
       } else {
@@ -123,10 +122,8 @@ app.post('/register', checkNotAuth, async (req, res) => {
                   users.push({ "username": user.username, "id": user.id, "password": user.password });
                 }
               }  
-            })
-            
-          }
-          
+            })            
+          }          
         })
         res.redirect('/login');
       }
