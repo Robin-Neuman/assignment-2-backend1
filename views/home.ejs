@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Home</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/script.js"></script>
 </head>
@@ -15,6 +15,21 @@
     <h1>List of restaurants:</h1>
     <div id="restaurantsCont">
         
+            <% for(let i=0; i < restaurants.length; i++){ %>
+                <li> <a href="/restPage/<%= restaurants[i].name %>"> <%= restaurants[i].name %></a>
+                </li>
+                <div>                    
+                <form action="/removeRest" method="POST">
+                    <input type="text" value="<%= restaurants[i].name %>" name="name" hidden>
+                    <button type="submit">Delete</button>
+                </form>
+                </div>
+                <% } %>
+        
+        <form action="/addRestaurant" method="POST">
+        <input type="text" name="name" placeholder="enter new restaurant name..." required>
+        <button type="submit">Submit</button>
+        </form>
     </div>
 </div>
 <div id="footerCont">

@@ -11,17 +11,24 @@
 </head>
 
 <body>
-    <h1>Login</h1>
+    <div id="cont">
+        <div id="loginWind">
+        <h1>Login</h1>
 
     <% if (messages.error) { %>
         <%= messages.error %>
         <% } %>
+    
     <form action="/login" method="POST">
         <input type="text" name="username" required>
         <input type="password" name="password" required>
         <button type="submit">Log in</button>
     </form>
-    <a href="register">Don't have an account? Register here!</a>
+    </div>
+    <div id="register">
+        <a href="register">Don't have an account? Register here!</a>
+    </div>
+</div>
 </body>
 
 </html>

@@ -1,7 +1,39 @@
 body {
   padding: 50px;
-  color: black;
+  color: rgb(34, 31, 31);
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a {
+  text-decoration: none;
+  color: rgb(44, 76, 136);
+}
+li {
+  text-decoration: none;
+}
+.hidden {
+  display: none;
+}
+#cont {
+  text-align: left;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+#cont input{
+  border-radius: 5px;
+  border: solid rgb(109, 109, 109) 0.5px;
+  padding: 5px;
+}
+#cont button{
+  border-radius: 5px;
+  border: solid rgb(167, 167, 167) 0.5px;
+  color: white;
+  background-color: rgb(44, 76, 136);
+  padding: 5px;
+}
+#register {
+  margin-top: 10px;
 }
 
 
