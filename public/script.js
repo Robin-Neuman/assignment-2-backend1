@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
         btn.setAttribute("class", "hidden");
         submit.removeAttribute("class", "hidden");
         let input = document.createElement('input');
-        input.attributes.required = "required";
+        input.required = true;
         input.setAttribute("name", "name");
         title.appendChild(input);
     })
