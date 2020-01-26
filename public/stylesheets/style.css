@@ -1,31 +1,32 @@
 body {
-  padding: 50px;
+  padding: 20px;
   color: rgb(34, 31, 31);
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  list-style-type: none;
 }
 a {
   text-decoration: none;
   color: rgb(44, 76, 136);
-}
-li {
-  text-decoration: none;
 }
 .hidden {
   display: none;
 }
 #cont {
   text-align: left;
-  margin-top: 10%;
   margin-left: auto;
   margin-right: auto;
-  width: 50%;
+  min-width: 200px;
+  max-width: 300px;
+  border: solid rgb(44, 76, 136) 2px;
+  padding: 20px;
+  border-radius: 10px;
 }
 #cont input{
   border-radius: 5px;
   border: solid rgb(109, 109, 109) 0.5px;
   padding: 5px;
 }
-#cont button{
+button{
   border-radius: 5px;
   border: solid rgb(167, 167, 167) 0.5px;
   color: white;
@@ -35,5 +36,48 @@ li {
 #register {
   margin-top: 10px;
 }
+#reviews, #mainCont {
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10%;
+  max-width: 150%;
+  border: solid rgb(10, 36, 85) 0.5px;
+  padding: 10px;
+  border-radius: 10px;
+}
+#reviews p {
+  max-width: 400px;
+  overflow-wrap: break-word;
+}
+.highlight {
+  color: rgb(31, 31, 197);
+  font-weight: 600;
+}
+.btn {
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
 
-
+}
+.review {
+  text-align: left;
+  border-bottom: solid rgb(10, 36, 85) 0.5px;
+  border-left: solid rgb(10, 36, 85) 0.5px;
+  padding: 10px;
+  border-radius: 10px;
+}
+textarea {
+  border: solid rgb(10, 36, 85) 0.5px;
+  padding: 10px;
+  border-radius: 5px;
+}
+#allCont {
+  width: 30%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

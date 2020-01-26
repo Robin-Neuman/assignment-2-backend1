@@ -11,6 +11,5 @@ document.addEventListener("DOMContentLoaded", (e) => {
         let input = document.createElement('input');
         input.setAttribute("name", "name");
         title.appendChild(input);
-        console.log("Works");
     })
 })

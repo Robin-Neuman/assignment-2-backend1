@@ -27,17 +27,6 @@ initializePass(
     users.find(user => user.id === id)
 )
 
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-// var db = mysql.createConnection({
-//   host: 'eu-cdbr-west-02.cleardb.net',
-//   user: 'b2ef15df6cafb2',
-//   password: '99921bac',
-//   database: 'heroku_5bcb73518029905'
-// });
-
 var db = mysql.createConnection({
   host: process.env.HOSTNAME,
   user: process.env.USER,
@@ -93,8 +82,6 @@ app.use(passport.session({
   resave: true,
   saveUninitialized: true,
 }))
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 app.post('/register', checkNotAuth, async (req, res) => {
 
@@ -154,16 +141,20 @@ app.post('/login', checkNotAuth, passport.authenticate('local', {
   failureFlash: true
 }))
 
-app.delete('/logout', (req, res) => {
+app.post('/logout', (req, res) => {
   req.logOut()
   res.redirect('/login')
 })
 
 app.get('/restPage/:restPage', checkAuth, (req, res) => {
   db.query('SELECT * FROM restaurants WHERE name=?', [req.params.restPage], (err, rows, fields) => {
+    if (rows[0] != undefined) {
     db.query('SELECT * FROM reviews WHERE restaurantId=?', [rows[0].id], function (err, reviews, fields){
     res.render('restPage', {name: req.params.restPage, reviews: reviews, username: req.user.username})
   })  
+} else {
+  res.redirect('/')
+}
 })
 })
 
@@ -177,20 +168,19 @@ app.post('/addRestaurant', checkAuth, (req, res) => {
 })
 
 app.post('/addReview', checkAuth, (req, res) => {
-  console.log(req.body.restName)
   db.query('SELECT * FROM restaurants WHERE name=?', [req.body.restName], function (err, rest) {
     db.query('INSERT INTO reviews (body, restaurantId, username, rating) VALUES (?, ?, ?, ?)', [req.body.body, rest[0].id, req.body.username, req.body.rating], function (err, rev) {
       
     })
   })
   
-  res.redirect(`/${req.body.restName}`)
+  res.redirect(`/restPage/${req.body.restName}`)
 })
 
 app.post('/removeRev', checkAuth, (req, res) => {
-  db.query('DELETE FROM reviews WHERE body=?', [req.body.body], function (err, rest) {
+  db.query('DELETE FROM reviews WHERE body=? AND username=? AND id=?', [req.body.body, req.body.username, req.body.id], function (err, rest) {
   })
-  res.render('changePage', {name: req.body.restPage, title: "removed"})
+  res.redirect(`/restPage/${req.body.restPage}`)
 })
 
 
@@ -198,15 +188,14 @@ app.post('/removeRest', checkAuth, (req, res) => {
   db.query('DELETE FROM restaurants WHERE name=?', [req.body.name], function (err, rest) {
   })
   
-  res.render('changePage', {name: req.params.restPage, title: "removed"})
+  res.redirect(`/`)
 })
 
 app.post('/editRest', checkAuth, (req, res) => {
-  console.log(req.body.name, req.body.restPage)
   db.query('UPDATE restaurants SET name=? WHERE name=?', [req.body.name, req.body.restPage], function (err, rest) {
   })
   
-  res.render('changePage', {name: req.body.name, title: "edited"})
+  res.redirect(`/restPage/${req.body.name}`)
 })
 
 function checkNotAuth (req, res, next) {

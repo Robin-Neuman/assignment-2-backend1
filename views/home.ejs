@@ -9,35 +9,41 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/script.js"></script>
 </head>
+
 <body>
-    <h1>Welcome to the review page!</h1>
-<div id="mainCont">
-    <h1>List of restaurants:</h1>
-    <div id="restaurantsCont">
-        
-            <% for(let i=0; i < restaurants.length; i++){ %>
-                <li> <a href="/restPage/<%= restaurants[i].name %>"> <%= restaurants[i].name %></a>
-                </li>
-                <div>                    
-                <form action="/removeRest" method="POST">
-                    <input type="text" value="<%= restaurants[i].name %>" name="name" hidden>
-                    <button type="submit">Delete</button>
+    <div id="allCont">
+    <div id="cont">
+        <h1>Welcome to the review page!</h1>
+        <h2>List of restaurants:</h2>
+        <div id="mainCont">
+                <table>
+                    <% for(let i=0; i < restaurants.length; i++){ %>
+                    <tr>
+                        <th>
+                            <li> <a href="/restPage/<%= restaurants[i].name %>"> <%= restaurants[i].name %></a></li>
+                        </th>
+                        <th>
+                            <form action="/removeRest" method="POST">
+                                <input type="text" value="<%= restaurants[i].name %>" name="name" hidden>
+                                <button type="submit">Delete</button>
+                            </form>
+                        </th>
+                    </tr>
+                    <% } %>
+                </table>
+            </div>
+                <form action="/addRestaurant" method="POST">
+                    <input type="text" name="name" placeholder="enter new restaurant name..." required>
+                    <button type="submit">Submit</button>
                 </form>
-                </div>
-                <% } %>
-        
-        <form action="/addRestaurant" method="POST">
-        <input type="text" name="name" placeholder="enter new restaurant name..." required>
-        <button type="submit">Submit</button>
+            </div>
+    
+    <div class="logout">
+        <form action="/logout?_method=DELETE" method="POST">
+            <button class="btn" type="submit">Log out</button>
         </form>
     </div>
 </div>
-<div id="footerCont">
-
-</div>
-<form action="/logout?_method=DELETE" method="POST">
-    <button type="submit">Log out</button>
-</form>
 </body>
 
 </html>

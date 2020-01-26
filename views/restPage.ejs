@@ -9,41 +9,50 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/script.js"></script>
     <script>
-    
+
     </script>
 </head>
 
 <body>
+    <div id="allCont">
     <form action="/home" method="GET">
-        <button type="submit">Home</button>
+        <button class="btn" type="submit">Home</button>
     </form>
-    <form action="/editRest" method="POST">        
-    <div id="titleBox">
-        <h1 id="restaurant"><%= name %></h1>
-        <input type="text" value="<%= name %>" name="restPage" hidden>
-        <button type="button" id="editBtn">Edit</button>
-        <button type="submit" id="editSubmit" class="hidden">Submit</button>
-    </div>
-    </form>
-    <div id="mainCont">
+    <div id="cont">        
+            <form action="/editRest" method="POST">
+                <div id="titleBox">
+                <h1 id="restaurant"><%= name %></h1>
+                <input type="text" value="<%= name %>" name="restPage" hidden>
+                <button type="button" id="editBtn">Edit</button>
+                <button type="submit" id="editSubmit" class="hidden">Submit</button>
+            </div>
+            </form>
+        <div>
+            <h3>Reviews:</h3>
+        </div>
         <div id="reviews">
             <% for(let i=0; i < reviews.length; i++){ %>
-            <div class="reviewBox">
-                <li>User <%= reviews[i].userId %> wrote: <%= reviews[i].body %></li>
-                <li>Rating: <%= reviews[i].rating %></li>
+            <div class="review">
+                <p><span class="highlight"><%= reviews[i].username %> wrote:</span> <%= reviews[i].body %></p>
+
+                <p><span class="highlight">Rating: </span><span id="test"><%= reviews[i].rating %>/5</span></p>
+
                 <form action="/removeRev" method="POST">
                     <input type="text" value="<%= reviews[i].body %>" name="body" hidden>
+                    <input type="text" value="<%= reviews[i].username %>" name="username" hidden>
+                    <input type="text" value="<%= reviews[i].id %>" name="id" hidden>
                     <input type="text" value="<%= name %>" name="restPage" hidden>
                     <button type="submit">Delete</button>
                 </form>
             </div>
             <% } %>
         </div>
-        <h3>Commenting as <%= username %></h3>
+        <h3>Commenting as <%= username %>:</h3>
         <form action="/addReview" method="POST">
             <input type="text" value="<%= username %>" name="username" hidden>
             <input type="text" value="<%= name %>" name="restName" hidden>
-            <input type="text" name="body" placeholder="write your review here..." required>
+            <textarea type="text" name="body" placeholder="write your review here..." required></textarea>
+            <h4>Rating: </h4>
             <select name="rating" required>
                 <option value=""></option>
                 <option value="1">1</option>
@@ -55,12 +64,10 @@
             <button type="submit">Submit</button>
         </form>
     </div>
-    <div id="footerCont">
-
+        <form action="/logout?_method=DELETE" method="POST">
+            <button class="btn" type="submit">Log out</button>
+        </form>
     </div>
-    <form action="/logout?_method=DELETE" method="POST">
-        <button type="submit">Log out</button>
-    </form>
 </body>
 
 </html>
