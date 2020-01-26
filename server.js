@@ -29,15 +29,16 @@ initializePass(
 
 
 
-var db = mysql.createConnection({
+var dbConfig = {
   host: 'eu-cdbr-west-02.cleardb.net',
   user: 'b2ef15df6cafb2',
   password: '99921bac',
   database: 'heroku_5bcb73518029905'
-});
+};
 
 
 function handleConnection() {
+  db = mysql.createConnection(dbConfig);
   db.connect(function connectDB(err) {
     if (err) {
       throw err;
