@@ -27,12 +27,15 @@ initializePass(
     users.find(user => user.id === id)
 )
 
+
+
 var db = mysql.createConnection({
-  host: process.env.HOSTNAME,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.DATABASE
+  host: 'eu-cdbr-west-02.cleardb.net',
+  user: 'b2ef15df6cafb2',
+  password: '99921bac',
+  database: 'heroku_5bcb73518029905'
 });
+
 
 function handleConnection() {
   db.connect(function connectDB(err) {
