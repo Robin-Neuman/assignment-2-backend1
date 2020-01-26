@@ -12,7 +12,7 @@ var flash = require('express-flash');
 var session = require('express-session');
 var bcrypt = require('bcryptjs');
 require('dotenv').config()
-var port = process.env.PORT || 3007;
+var port = process.env.PORT || 3006;
 
 var initializePass = require("./pass-config");
 
